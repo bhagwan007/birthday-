@@ -50,6 +50,31 @@ button {
   display: none;
 }
 
+.timer-box {
+  margin: 15px 0;
+}
+
+.timer-text {
+  font-weight: bold;
+  color: #ff1493;
+}
+
+.timer-bg {
+  width: 100%;
+  height: 10px;
+  background: #ffd1e8;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.timer-bar {
+  height: 100%;
+  width: 100%;
+  background: #ff1493;
+  transition: width 0.1s linear;
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -76,16 +101,12 @@ canvas {
 </div>
 
 <!-- QUESTION 1 -->
-<div id="q1" class="hidden">
+<div id="q1" class="hidden question">
   <h2>Pani puri 🥟 or Ragda pattice?</h2>
-
-  <div style="margin:15px 0;">
-    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
-    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
-      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
-    </div>
+  <div class="timer-box">
+    <div class="timer-text">⏱️ Answer in <span>5</span> seconds 😈</div>
+    <div class="timer-bg"><div class="timer-bar"></div></div>
   </div>
-
   <div class="options">
     <button onclick="next()">Pani puri</button>
     <button onclick="next()">Ragda pattice</button>
@@ -93,16 +114,12 @@ canvas {
 </div>
 
 <!-- QUESTION 2 -->
-<div id="q2" class="hidden">
+<div id="q2" class="hidden question">
   <h2>Chole kulche or Paneer lababdar?</h2>
-
-  <div style="margin:15px 0;">
-    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
-    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
-      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
-    </div>
+  <div class="timer-box">
+    <div class="timer-text">⏱️ Answer in <span>5</span> seconds 😈</div>
+    <div class="timer-bg"><div class="timer-bar"></div></div>
   </div>
-
   <div class="options">
     <button onclick="next()">Chole kulche</button>
     <button onclick="next()">Paneer lababdar</button>
@@ -110,23 +127,19 @@ canvas {
 </div>
 
 <!-- QUESTION 3 -->
-<div id="q3" class="hidden">
+<div id="q3" class="hidden question">
   <h2>Beach 🌊 or Mountains 🏔️?</h2>
-
-  <div style="margin:15px 0;">
-    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
-    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
-      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
-    </div>
+  <div class="timer-box">
+    <div class="timer-text">⏱️ Answer in <span>5</span> seconds 😈</div>
+    <div class="timer-bg"><div class="timer-bar"></div></div>
   </div>
-
   <div class="options">
     <button onclick="next()">Beach</button>
     <button onclick="next()">Mountains</button>
   </div>
 </div>
 
-<!-- CARE MESSAGE -->
+<!-- CARE -->
 <div id="care" class="hidden">
   <p>
     Before going next 💗<br><br>
@@ -159,37 +172,45 @@ canvas {
 
 <script>
 let step = 0;
-let countdown;
-let timeLeft = 5;
-
+let timerInterval = null;
 const sections = ["intro","q1","q2","q3","care"];
 
-function startTimer() {
-  timeLeft = 5;
-  const timerText = document.getElementById("timerText");
-  const timerBar = document.getElementById("timerBar");
+function startTimer(questionDiv) {
+  let time = 5;
+  const textSpan = questionDiv.querySelector(".timer-text span");
+  const bar = questionDiv.querySelector(".timer-bar");
 
-  timerText.innerHTML = "<b>⏱️ Answer in 5 seconds 😈</b>";
-  timerBar.style.width = "100%";
+  bar.style.transition = "none";
+  bar.style.width = "100%";
 
-  countdown = setInterval(() => {
-    timeLeft--;
-    timerText.innerHTML = `<b>⏱️ Answer in ${timeLeft} seconds 😈</b>`;
-    timerBar.style.width = (timeLeft / 5) * 100 + "%";
+  setTimeout(() => {
+    bar.style.transition = "width 5s linear";
+    bar.style.width = "0%";
+  }, 50);
 
-    if (timeLeft <= 0) {
-      clearInterval(countdown);
+  textSpan.innerText = time;
+
+  timerInterval = setInterval(() => {
+    time--;
+    textSpan.innerText = time;
+    if (time <= 0) {
+      clearInterval(timerInterval);
       next();
     }
   }, 1000);
 }
 
 function next() {
-  clearInterval(countdown);
+  if (timerInterval) clearInterval(timerInterval);
+
   document.getElementById(sections[step]).classList.add("hidden");
   step++;
-  document.getElementById(sections[step]).classList.remove("hidden");
-  if (step > 0 && step < 4) startTimer();
+  const nextSection = document.getElementById(sections[step]);
+  nextSection.classList.remove("hidden");
+
+  if (nextSection.classList.contains("question")) {
+    startTimer(nextSection);
+  }
 }
 
 function birthday() {
@@ -199,7 +220,7 @@ function birthday() {
   startConfetti();
 }
 
-// ❤️ CONFETTI
+/* ❤️ CONFETTI */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
