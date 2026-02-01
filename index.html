@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Smriti 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card {
+  background: #ffe4ec;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 90%;
+  box-shadow: 0 20px 40px rgba(255,20,147,0.4);
+}
+
+h1, h2 {
+  color: #ff1493;
+}
+
+button {
+  padding: 14px 28px;
+  margin: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 14px;
+  background: #ff1493;
+  color: white;
+  cursor: pointer;
+}
+
+.options button {
+  background: #ff85c2;
+  color: #800040;
+}
+
+.hidden {
+  display: none;
+}
+
+.shake {
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="card">
+
+<!-- INTRO -->
+<div id="intro">
+  <h1>Hey Smriti 💖</h1>
+  <p>
+    It’s just a simple quizzz 😌<br>
+    Answer carefully as your life depends on it 😈
+  </p>
+  <button onclick="next()">Start Quiz</button>
+</div>
+
+<!-- QUESTION 1 -->
+<div id="q1" class="hidden">
+  <h2>Pani puri 🥟 or Ragda pattice?</h2>
+  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+  <div class="options">
+    <button onclick="shakeAndNext()">Pani puri</button>
+    <button onclick="shakeAndNext()">Ragda pattice</button>
+  </div>
+</div>
+
+<!-- QUESTION 2 -->
+<div id="q2" class="hidden">
+  <h2>Chole kulche or Paneer lababdar?</h2>
+  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+  <div class="options">
+    <button onclick="shakeAndNext()">Chole kulche</button>
+    <button onclick="shakeAndNext()">Paneer lababdar</button>
+  </div>
+</div>
+
+<!-- QUESTION 3 -->
+<div id="q3" class="hidden">
+  <h2>Beach 🌊 or Mountains 🏔️?</h2>
+  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+  <div class="options">
+    <button onclick="shakeAndNext()">Beach</button>
+    <button onclick="shakeAndNext()">Mountains</button>
+  </div>
+</div>
+
+<!-- CARE MESSAGE -->
+<div id="care" class="hidden">
+  <p>
+    Before going next 💗<br><br>
+    Make sure you are hydrated 🥤<br>
+    and studying without taking lots of stress honey 😌
+  </p>
+  <button onclick="birthday()">Proceed</button>
+</div>
+
+<!-- BIRTHDAY -->
+<div id="birthday" class="hidden" style="
+  background: url('smriti.jpg') center/cover no-repeat;
+  padding: 40px;
+  border-radius: 20px;
+">
+  <h1 style="
+    font-size: 42px;
+    background: rgba(255,255,255,0.85);
+    padding: 20px;
+    border-radius: 15px;
+  ">
+    HAPPIEST BIRTHDAY 🎉🎂<br>
+    TO MY CUTIEEE 💖
+  </h1>
+</div>
+
+</div>
+
+<audio id="song" src="happybirthday.mp3"></audio>
+
+<script>
+let step = 0;
+let countdown;
+let timeLeft = 5;
+
+const sections = ["intro","q1","q2","q3","care"];
+
+function startTimer() {
+  timeLeft = 5;
+  const timer = document.getElementById("timer");
+  timer.innerText = `⏱️ Answer in ${timeLeft} seconds 😈`;
+
+  countdown = setInterval(() => {
+    timeLeft--;
+    timer.innerText = `⏱️ Answer in ${timeLeft} seconds 😈`;
+    if (timeLeft === 0) {
+      clearInterval(countdown);
+      next();
+    }
+  }, 1000);
+}
+
+function next() {
+  clearInterval(countdown);
+  document.getElementById(sections[step]).classList.add("hidden");
+  step++;
+  document.getElementById(sections[step]).classList.remove("hidden");
+  if (step > 0 && step < 4) startTimer();
+}
+
+function shakeAndNext() {
+  document.body.classList.add("shake");
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+    next();
+  }, 400);
+}
+
+function birthday() {
+  document.getElementById("care").classList.add("hidden");
+  document.getElementById("birthday").classList.remove("hidden");
+  document.getElementById("song").play();
+  startConfetti();
+}
+
+// ❤️ CONFETTI
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+let hearts = [];
+
+function startConfetti() {
+  for (let i = 0; i < 200; i++) {
+    hearts.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      s: Math.random() * 12 + 8,
+      v: Math.random() * 3 + 2,
+      c: `hsl(${Math.random()*360},100%,60%)`
+    });
+  }
+  animate();
+}
+
+function drawHeart(x,y,s,c){
+  ctx.fillStyle=c;
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+  ctx.bezierCurveTo(x-s,y-s,x-2*s,y+s/2,x,y+s*1.5);
+  ctx.bezierCurveTo(x+2*s,y+s/2,x+s,y-s,x,y);
+  ctx.fill();
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  hearts.forEach(h=>{
+    drawHeart(h.x,h.y,h.s,h.c);
+    h.y+=h.v;
+    if(h.y>canvas.height)h.y=-20;
+  });
+  requestAnimationFrame(animate);
+}
+</script>
+
+</body>
+</html>
