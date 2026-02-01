@@ -50,18 +50,6 @@ button {
   display: none;
 }
 
-.shake {
-  animation: shake 0.4s;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  50% { transform: translateX(6px); }
-  75% { transform: translateX(-6px); }
-  100% { transform: translateX(0); }
-}
-
 canvas {
   position: fixed;
   top: 0;
@@ -90,30 +78,51 @@ canvas {
 <!-- QUESTION 1 -->
 <div id="q1" class="hidden">
   <h2>Pani puri 🥟 or Ragda pattice?</h2>
-  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+
+  <div style="margin:15px 0;">
+    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
+    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
+      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
+    </div>
+  </div>
+
   <div class="options">
-    <button onclick="shakeAndNext()">Pani puri</button>
-    <button onclick="shakeAndNext()">Ragda pattice</button>
+    <button onclick="next()">Pani puri</button>
+    <button onclick="next()">Ragda pattice</button>
   </div>
 </div>
 
 <!-- QUESTION 2 -->
 <div id="q2" class="hidden">
   <h2>Chole kulche or Paneer lababdar?</h2>
-  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+
+  <div style="margin:15px 0;">
+    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
+    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
+      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
+    </div>
+  </div>
+
   <div class="options">
-    <button onclick="shakeAndNext()">Chole kulche</button>
-    <button onclick="shakeAndNext()">Paneer lababdar</button>
+    <button onclick="next()">Chole kulche</button>
+    <button onclick="next()">Paneer lababdar</button>
   </div>
 </div>
 
 <!-- QUESTION 3 -->
 <div id="q3" class="hidden">
   <h2>Beach 🌊 or Mountains 🏔️?</h2>
-  <p id="timer">⏱️ Answer in 5 seconds 😈</p>
+
+  <div style="margin:15px 0;">
+    <div id="timerText"><b>⏱️ Answer in 5 seconds 😈</b></div>
+    <div style="width:100%;height:10px;background:#ffd1e8;border-radius:10px;overflow:hidden;margin-top:6px;">
+      <div id="timerBar" style="height:100%;width:100%;background:#ff1493;"></div>
+    </div>
+  </div>
+
   <div class="options">
-    <button onclick="shakeAndNext()">Beach</button>
-    <button onclick="shakeAndNext()">Mountains</button>
+    <button onclick="next()">Beach</button>
+    <button onclick="next()">Mountains</button>
   </div>
 </div>
 
@@ -129,15 +138,15 @@ canvas {
 
 <!-- BIRTHDAY -->
 <div id="birthday" class="hidden" style="
-  background: url('smriti.jpg') center/cover no-repeat;
-  padding: 40px;
-  border-radius: 20px;
+  background:url('smriti.jpg') center/cover no-repeat;
+  padding:40px;
+  border-radius:20px;
 ">
   <h1 style="
-    font-size: 42px;
-    background: rgba(255,255,255,0.85);
-    padding: 20px;
-    border-radius: 15px;
+    font-size:42px;
+    background:rgba(255,255,255,0.85);
+    padding:20px;
+    border-radius:15px;
   ">
     HAPPIEST BIRTHDAY 🎉🎂<br>
     TO MY CUTIEEE 💖
@@ -157,13 +166,18 @@ const sections = ["intro","q1","q2","q3","care"];
 
 function startTimer() {
   timeLeft = 5;
-  const timer = document.getElementById("timer");
-  timer.innerText = `⏱️ Answer in ${timeLeft} seconds 😈`;
+  const timerText = document.getElementById("timerText");
+  const timerBar = document.getElementById("timerBar");
+
+  timerText.innerHTML = "<b>⏱️ Answer in 5 seconds 😈</b>";
+  timerBar.style.width = "100%";
 
   countdown = setInterval(() => {
     timeLeft--;
-    timer.innerText = `⏱️ Answer in ${timeLeft} seconds 😈`;
-    if (timeLeft === 0) {
+    timerText.innerHTML = `<b>⏱️ Answer in ${timeLeft} seconds 😈</b>`;
+    timerBar.style.width = (timeLeft / 5) * 100 + "%";
+
+    if (timeLeft <= 0) {
       clearInterval(countdown);
       next();
     }
@@ -176,14 +190,6 @@ function next() {
   step++;
   document.getElementById(sections[step]).classList.remove("hidden");
   if (step > 0 && step < 4) startTimer();
-}
-
-function shakeAndNext() {
-  document.body.classList.add("shake");
-  setTimeout(() => {
-    document.body.classList.remove("shake");
-    next();
-  }, 400);
 }
 
 function birthday() {
